@@ -8,7 +8,6 @@ from sqlalchemy.orm import (
     relationship as sqlalchemy_relationship,
 )
 from sqlalchemy.sql import functions as sqlalchemy_functions
-from sqlalchemy import PickleType as PickleTypeForDict
 from src.utility.database.base_table import DBBaseTable
 
 
@@ -20,9 +19,11 @@ class Frame(DBBaseTable):
     )
     frame_index: SQLAlchemyMapped[int] = sqlalchemy_mapped_column(nullable=False)
     scan_id: SQLAlchemyMapped[int] = sqlalchemy_mapped_column(nullable=False)
-    projection_matrix: SQLAlchemyMapped[list] = sqlalchemy_mapped_column(nullable=False)
+    projection_matrix: SQLAlchemyMapped[list] = sqlalchemy_mapped_column(
+        sqlalchemy.JSON, nullable=False
+    )
     camera_pose_ar_frame: SQLAlchemyMapped[list] = sqlalchemy_mapped_column(
-        nullable=False
+        sqlalchemy.JSON, nullable=False
     )
     created_at: SQLAlchemyMapped[datetime.datetime] = sqlalchemy_mapped_column(
         sqlalchemy.DateTime(timezone=True),
