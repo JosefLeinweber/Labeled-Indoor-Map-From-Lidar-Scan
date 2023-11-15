@@ -2,7 +2,7 @@
 FROM python:3.11.1-slim-bullseye
 
 # Set the working directory
-WORKDIR /app
+WORKDIR /usr/scan_processing_service
 
 # Set up Python behaviour
 ENV PYTHONDONTWRITEBYTECODE 1

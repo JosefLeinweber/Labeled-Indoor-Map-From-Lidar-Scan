@@ -2,11 +2,11 @@ import datetime
 import loguru
 import pydantic
 from src.utility.pydantic_schema.base_schema import BaseModel
+from pydantic import Field
 
 
 class ScanBase(BaseModel):
-    scan_name: str
-    scan_id: int
+    name: str
 
 
 class ScanInCreate(ScanBase):
@@ -15,9 +15,11 @@ class ScanInCreate(ScanBase):
 
 
 class ScanOutDelete(ScanBase):
+    id: int
     is_deleted: bool
 
 
 class ScanOut(ScanBase):
-    user_id: int
-    num_images: int
+    id: int
+    user_id: int | None
+    num_images: int | None

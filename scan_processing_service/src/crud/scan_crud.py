@@ -15,6 +15,7 @@ async def create(scan: ScanInCreate, db_session) -> Scan:
     await db_session.commit()
     await db_session.refresh(instance=new_scan)
     await db_session.close()
+    loguru.logger.debug(f"Created scan: {new_scan.__dict__}")
     return new_scan
 
 
