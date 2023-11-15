@@ -1,5 +1,5 @@
 venv_for_web_dev/
-
+*.env
 
 # Byte-compiled, Optimized, and DLL Files
 __pycache__/
