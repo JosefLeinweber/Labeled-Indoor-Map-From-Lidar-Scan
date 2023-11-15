@@ -12,8 +12,12 @@ class ScanBase(BaseModel):
 class ScanInCreate(ScanBase):
     user_id: int
     num_images: int
-    last_camera_pose: dict
 
 
-class ScanInDelete(ScanBase):
+class ScanOutDelete(ScanBase):
     is_deleted: bool
+
+
+class ScanOut(ScanBase):
+    user_id: int
+    num_images: int

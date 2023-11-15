@@ -8,12 +8,12 @@ from sqlalchemy.orm import (
     relationship as sqlalchemy_relationship,
 )
 from sqlalchemy.sql import functions as sqlalchemy_functions
-
+from sqlalchemy import PickleType as PickleTypeForDict
 from src.utility.database.base_table import DBBaseTable
 
 
 class Scan(DBBaseTable):
-    __tablename__ = "account"
+    __tablename__ = "scan"
 
     id: SQLAlchemyMapped[int] = sqlalchemy_mapped_column(
         primary_key=True, autoincrement="auto"
@@ -23,7 +23,6 @@ class Scan(DBBaseTable):
     )
     user_id: SQLAlchemyMapped[int] = sqlalchemy_mapped_column(nullable=False)
     num_images: SQLAlchemyMapped[int] = sqlalchemy_mapped_column(nullable=False)
-    last_camera_pose: SQLAlchemyMapped[dict] = sqlalchemy_mapped_column(nullable=False)
     created_at: SQLAlchemyMapped[datetime.datetime] = sqlalchemy_mapped_column(
         sqlalchemy.DateTime(timezone=True),
         nullable=False,
