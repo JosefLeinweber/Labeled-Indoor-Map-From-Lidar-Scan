@@ -25,7 +25,8 @@ async def create_scan(
         get_async_session
     ),
 ) -> ScanOut:
-    return {"message": "Scan Created"}
+    created_scan = await scan_crud.create(new_scan, db_session())
+    return ScanOut(**created_scan.__dict__)
 
 
 @router.get(
