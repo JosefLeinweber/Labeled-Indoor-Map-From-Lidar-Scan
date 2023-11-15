@@ -57,7 +57,7 @@ class Settings(pydantic_settings.BaseSettings):
 
     class Config(pydantic.BaseConfig):
         case_sensitive: bool = True
-        env_file: str = f"{str(ROOT_DIR)}/.env"
+        env_file: str = f"{str(ROOT_DIR)}/scan_processing_service.env"
         validate_assignment: bool = True
 
     @property

@@ -1,22 +1,44 @@
 version: "3.8"
 
 services:
-  web:
-    container_name: web
+  main_application:
+    container_name: main_application
     restart: on-failure
     build:
       dockerfile: Dockerfile
-      context: ./backend/
+      context: ./main_application/
 
     env_file:
-      - "./.env"
+      - "./main_application.env"
 
     environment:
       - WATCHFILES_FORCE_POLLING=true
 
     volumes:
-      - ./backend/src/:/usr/backend/src/
-      - ./backend/test:/usr/backend/test/
+      - ./main_application/src/:/usr/main_application/src/
+      - ./main_application/test:/usr/main_application/test/
+    ports:
+      - 8002:8000
+
+    depends_on:
+      - dev_db_server
+
+  scan_processing_service:
+    container_name: scan_processing_service
+    restart: on-failure
+    build:
+      dockerfile: Dockerfile
+      context: ./scan_processing_service/
+
+    env_file:
+      - "./scan_processing_service.env"
+
+    environment:
+      - WATCHFILES_FORCE_POLLING=true
+
+    volumes:
+      - ./scan_processing_service/src/:/usr/scan_processing_service/src/
+      - ./scan_processing_service/test:/usr/scan_processing_service/test/
     ports:
       - 8001:8000
 
@@ -30,7 +52,7 @@ services:
       - postgres_data:/var/lib/postgresql/data/
     restart: always
     env_file:
-      - "./.env"
+      - "./scan_processing_service.env"
 
     environment:
       - POSTGRES_USER=${POSTGRES_USERNAME}
@@ -48,7 +70,7 @@ services:
     container_name: db_adminer
     restart: always
     env_file:
-      - "./.env"
+      - "./scan_processing_service.env"
     environment:
       - POSTGRES_USER=${POSTGRES_USERNAME}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
