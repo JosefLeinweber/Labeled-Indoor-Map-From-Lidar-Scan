@@ -35,6 +35,7 @@ services:
 
     environment:
       - WATCHFILES_FORCE_POLLING=true
+      - GOOGLE_APPLICATION_CREDENTIALS=scan-processing-d5aa2e71588b.json
 
     volumes:
       - ./scan_processing_service/src/:/usr/scan_processing_service/src/

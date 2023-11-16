@@ -18,7 +18,6 @@ class Frame(DBBaseTable):
         primary_key=True, autoincrement="auto"
     )
     frame_index: SQLAlchemyMapped[int] = sqlalchemy_mapped_column(nullable=False)
-    scan_id: SQLAlchemyMapped[int] = sqlalchemy_mapped_column(nullable=False)
     projection_matrix: SQLAlchemyMapped[list] = sqlalchemy_mapped_column(
         sqlalchemy.JSON, nullable=False
     )
@@ -35,5 +34,9 @@ class Frame(DBBaseTable):
         nullable=True,
         server_onupdate=sqlalchemy.schema.FetchedValue(for_update=True),
     )
+    scan_id: SQLAlchemyMapped[int] = sqlalchemy_mapped_column(
+        sqlalchemy.ForeignKey("scan.id"), nullable=False
+    )
+    scan = sqlalchemy_relationship("Scan", back_populates="frame")
 
     __mapper_args__ = {"eager_defaults": True}

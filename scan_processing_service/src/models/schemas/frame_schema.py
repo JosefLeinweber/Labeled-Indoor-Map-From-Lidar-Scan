@@ -6,7 +6,6 @@ from pydantic import Field
 
 
 class FrameBase(BaseModel):
-    id: int
     frame_index: int
 
 
@@ -22,6 +21,7 @@ class FrameOutDelete(FrameBase):
 
 
 class FrameOut(FrameBase):
+    id: int
     scan_id: int
     projection_matrix: list
     camera_pose_ar_frame: list

@@ -33,5 +33,6 @@ class Scan(DBBaseTable):
         nullable=True,
         server_onupdate=sqlalchemy.schema.FetchedValue(for_update=True),
     )
+    frame = sqlalchemy_relationship("Frame", back_populates="scan")
 
     __mapper_args__ = {"eager_defaults": True}

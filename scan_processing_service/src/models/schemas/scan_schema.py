@@ -2,6 +2,7 @@ import datetime
 import loguru
 import pydantic
 from src.utility.pydantic_schema.base_schema import BaseModel
+from src.models.schemas.frame_schema import FrameOut
 from pydantic import Field
 
 
@@ -21,5 +22,9 @@ class ScanOutDelete(ScanBase):
 
 class ScanOut(ScanBase):
     id: int
-    user_id: int | None
-    num_images: int | None
+    user_id: int
+    num_images: int
+
+
+class ScanOutWithFrames(ScanOut):
+    frames: list[FrameOut]
