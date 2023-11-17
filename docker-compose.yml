@@ -1,28 +1,6 @@
 version: "3.8"
 
 services:
-  main_application:
-    container_name: main_application
-    restart: on-failure
-    build:
-      dockerfile: Dockerfile
-      context: ./main_application/
-
-    env_file:
-      - "./main_application.env"
-
-    environment:
-      - WATCHFILES_FORCE_POLLING=true
-
-    volumes:
-      - ./main_application/src/:/usr/main_application/src/
-      - ./main_application/test:/usr/main_application/test/
-    ports:
-      - 8002:8000
-
-    depends_on:
-      - dev_db_server
-
   scan_processing_service:
     container_name: scan_processing_service
     restart: on-failure
@@ -31,7 +9,7 @@ services:
       context: ./scan_processing_service/
 
     env_file:
-      - "./scan_processing_service.env"
+      - "./.env"
 
     environment:
       - WATCHFILES_FORCE_POLLING=true
@@ -53,7 +31,7 @@ services:
       - postgres_data:/var/lib/postgresql/data/
     restart: always
     env_file:
-      - "./scan_processing_service.env"
+      - "./.env"
 
     environment:
       - POSTGRES_USER=${POSTGRES_USERNAME}
@@ -71,7 +49,7 @@ services:
     container_name: db_adminer
     restart: always
     env_file:
-      - "./scan_processing_service.env"
+      - "./.env"
     environment:
       - POSTGRES_USER=${POSTGRES_USERNAME}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
