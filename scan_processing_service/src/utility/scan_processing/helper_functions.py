@@ -1,13 +1,13 @@
 import math
+
+import loguru
 import numpy as np
 from scipy.spatial import Delaunay
 
-import loguru
 
+def generate_vector(camera_pose_ar_frame, angle_x=0, angle_y=0, angle_z=0, color=[1, 0, 0], length=100):
+    camera_pose_ar_frame = np.array(camera_pose_ar_frame).reshape(4, 4)
 
-def generate_line(
-    camera_pose_ar_frame, angle_x=0, angle_y=0, angle_z=0, color=[1, 0, 0], length=100
-):
     rotated_points = []
 
     # Convert degrees to radians
@@ -50,6 +50,7 @@ def generate_line(
 
     for i in range(0, length, 1):
         point = np.dot(camera_pose_ar_frame[:3, :3], np.array([0, 0, -i / 10]))
+
         rotated_points.append(np.dot(R, point) + camera_pose_ar_frame[:3, 3])
 
     return np.asarray(rotated_points)
@@ -84,7 +85,7 @@ def alpha_shape(points, alpha, only_outer=True):
         edges.add((i, j))
 
     tri = Delaunay(points)
-    edges = set()
+    edges: set = set()
     # Loop over triangles:
     # ia, ib, ic = indices of corner points of the triangle
     for ia, ib, ic in tri.simplices:

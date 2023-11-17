@@ -1,8 +1,10 @@
 import datetime
+
 import loguru
 import pydantic
-from src.utility.pydantic_schema.base_schema import BaseModel
 from pydantic import Field
+
+from src.utility.pydantic_schema.base_schema import BaseModel
 
 
 class FloorplanBase(BaseModel):
@@ -21,4 +23,4 @@ class FloorplanOutDelete(FloorplanBase):
 class FloorplanOut(FloorplanBase):
     id: int
     scan_id: int
-    polygon: list
+    polygon_points: list

@@ -1,8 +1,10 @@
 import datetime
+
 import loguru
 import pydantic
-from src.utility.pydantic_schema.base_schema import BaseModel
 from pydantic import Field
+
+from src.utility.pydantic_schema.base_schema import BaseModel
 
 
 class FrameBase(BaseModel):
@@ -24,4 +26,8 @@ class FrameOut(FrameBase):
     id: int
     scan_id: int
     projection_matrix: list
+    camera_pose_ar_frame: list
+
+
+class FrameInIntersectionCalculator(FrameBase):
     camera_pose_ar_frame: list

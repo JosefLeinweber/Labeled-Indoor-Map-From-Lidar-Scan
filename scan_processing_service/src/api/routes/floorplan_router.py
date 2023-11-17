@@ -1,10 +1,9 @@
-import fastapi
-import loguru
 import pathlib
 
-import open3d as o3d
+import fastapi
+import loguru
 import numpy as np
-
+import open3d as o3d
 from sqlalchemy.ext.asyncio import (
     async_sessionmaker as sqlalchemy_async_sessionmaker,
     AsyncEngine as SQLAlchemyAsyncEngine,
@@ -13,16 +12,10 @@ from sqlalchemy.ext.asyncio import (
 )
 
 from src.crud import floorplan_crud
-from src.models.schemas.scan_schema import (
-    ScanInCreate,
-    ScanOutDelete,
-    ScanOut,
-    ScanOutWithFrames,
-)
-from src.models.schemas.floorplan_schema import FloorplanOut, FloorplanInCreate
-from src.utility.database.db_session import get_async_session
+from src.models.schemas.floorplan_schema import FloorplanInCreate, FloorplanOut
+from src.models.schemas.scan_schema import ScanInCreate, ScanOut, ScanOutDelete, ScanOutWithFrames
 from src.utility.cloud_storage.gcs_class import get_gcstorage
-
+from src.utility.database.db_session import get_async_session
 
 router = fastapi.APIRouter(prefix="/floorplan", tags=["Floorplan"])
 
@@ -31,75 +24,47 @@ router = fastapi.APIRouter(prefix="/floorplan", tags=["Floorplan"])
     path="",
     name="floorplan:generate_floor_plan_from_scan",
     response_model=FloorplanOut,
-    status_code=200,
+    status_code=201,
 )
 async def generate_floor_plan_from_scan(
     new_floorplan: FloorplanInCreate,
-    db_session: sqlalchemy_async_sessionmaker[SQLAlchemyAsyncSession] = fastapi.Depends(
-        get_async_session
-    ),
+    db_session: sqlalchemy_async_sessionmaker[SQLAlchemyAsyncSession] = fastapi.Depends(get_async_session),
 ) -> FloorplanOut:
     try:
         created_floorplan = await floorplan_crud.create(new_floorplan, db_session())
 
     except Exception as e:
-        raise fastapi.HTTPException(
-            status_code=500, detail=f"Failed to generate floorplan\n{e}"
-        )
+        raise fastapi.HTTPException(status_code=500, detail=f"Failed to generate floorplan\n{e}")
     loguru.logger.debug(f"Created floorplan: {created_floorplan.__dict__}")
 
     return FloorplanOut(
         name=created_floorplan.name,
         id=created_floorplan.id,
         scanId=created_floorplan.scan_id,
-        polygon=created_floorplan.polygon,
+        polygonPoints=created_floorplan.polygon_points,
     )
 
 
 @router.get(
-    path="/reading_files",
-    name="floorplan:testing_gcs",
-    response_model=dict,
+    path="/{scan_id}",
+    name="floorplan:get_floor_plan_by_scan_id",
+    response_model=FloorplanOut,
     status_code=200,
 )
-async def testing_gcs(
-    db_session: sqlalchemy_async_sessionmaker[SQLAlchemyAsyncSession] = fastapi.Depends(
-        get_async_session
-    ),
-) -> dict:
+async def get_floor_plan_by_scan_id(
+    scan_id: int,
+    db_session: sqlalchemy_async_sessionmaker[SQLAlchemyAsyncSession] = fastapi.Depends(get_async_session),
+) -> FloorplanOut:
     try:
-        loguru.logger.debug("* Testing GCS")
-        working_dir = pathlib.Path.cwd()
-        downloads_folder = working_dir.joinpath("downloads")
-        gcs = get_gcstorage()
-        loguru.logger.debug(f"List of buckets: {gcs.list_buckets()}")
-        bucket_gcs = gcs.get_bucket("gcs_api_demo_12353", project_id="scan-processing")
-        loguru.logger.debug(
-            f"List of blobs: {[blob.name for blob in bucket_gcs.list_blobs()]}"
-        )
-        blob = bucket_gcs.blob("points.ply")
-
-        path_download = downloads_folder.joinpath(blob.name)
-        loguru.logger.debug(f"Download path: {path_download}")
-        if not path_download.parent.exists():
-            path_download.parent.mkdir(parents=True)
-        blob.download_to_filename(str(path_download))
-
+        floorplan = await floorplan_crud.get_by_scan_id(scan_id, db_session())
     except Exception as e:
-        raise fastapi.HTTPException(
-            status_code=500, detail=f"Failed to list buckets\n{e}"
-        )
+        raise fastapi.HTTPException(status_code=500, detail=f"Failed to get floorplan\n{e}")
+    if floorplan is None:
+        raise fastapi.HTTPException(status_code=404, detail=f"Floorplan with scan id {scan_id} not found")
 
-    try:
-        pcd = o3d.io.read_point_cloud(str(path_download))
-
-    except Exception as e:
-        raise fastapi.HTTPException(
-            status_code=500, detail=f"Failed to create point cloud\n{e}"
-        )
-
-    return {
-        "success": True if blob else False,
-        "blob content type": blob.content_type,
-        "pcd size": len(pcd.points),
-    }
+    return FloorplanOut(
+        name=floorplan.name,
+        id=floorplan.id,
+        scanId=floorplan.scan_id,
+        polygonPoints=floorplan.polygon_points,
+    )

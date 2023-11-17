@@ -1,11 +1,11 @@
-import numpy as np
-from shapely.geometry import Polygon
-import matplotlib.pyplot as plt
-import shapely.geometry as sg
 import sys
 
-from src.utility.floorplan_generator.helper_functions import alpha_shape, generate_line
-from src.utility.floorplan_generator.intersection_point import IntersectionPoint
+import matplotlib.pyplot as plt
+import numpy as np
+import shapely.geometry as sg
+from shapely.geometry import Polygon
+
+from src.utility.scan_processing.helper_functions import alpha_shape
 
 
 class FloorplanGenerator:
@@ -28,9 +28,7 @@ class FloorplanGenerator:
         rest = self.point_cloud
         for i in range(max_plane_idx):
             colors = plt.get_cmap("tab20")(i)
-            segment_models[i], inliers = rest.segment_plane(
-                distance_threshold=0.2, ransac_n=3, num_iterations=1000
-            )
+            segment_models[i], inliers = rest.segment_plane(distance_threshold=0.2, ransac_n=3, num_iterations=1000)
             segments[i] = rest.select_by_index(inliers, invert=False)
             segments[i].paint_uniform_color(list(colors[:3]))
             rest = rest.select_by_index(inliers, invert=True)
@@ -65,7 +63,7 @@ class FloorplanGenerator:
         :return: The average floor height.
         """
         floor_points = self.extract_floor_points()
-        average_floor_height = 0
+        average_floor_height: float = 0
         for i in range(len(floor_points)):
             average_floor_height += floor_points[i][1]
         average_floor_height /= len(floor_points)
@@ -123,7 +121,7 @@ class FloorplanGenerator:
         for i in range(len(edge_dict)):
             key = str(key)
             value = edge_dict[key]
-            self.sorted_edge_points.append(value)
+            self.sorted_edge_points.append(value.tolist())
             key = value
 
     def compute_floor_plan_polygon(self):
@@ -135,24 +133,6 @@ class FloorplanGenerator:
         self.compute_edge_indexies()
         self.sort_floor_edges()
         return Polygon(self.sorted_edge_points)
-
-    def compute_intersections_with_camera_views(self, frames):
-        for frame in frames:
-            is_intersection = self.polygon.intersection(
-                sg.LineString(frame.center_of_fov)
-            )
-            if type(is_intersection) == sg.linestring.LineString:
-                x, y = is_intersection.xy[0][-1], is_intersection.xy[1][-1]
-                self.intersections.append(
-                    IntersectionPoint(
-                        coordinates=[x, y],
-                        frame_index=frame.frame_index,
-                    )
-                )
-            elif type(is_intersection) == sg.multilinestring.MultiLineString:
-                self.intersections.append(None)
-            else:
-                self.intersections.append(None)
 
     def __repr__(self) -> str:
         return f"FloorPlan <point_cloud :{self.point_cloud} \nfloor_edge_indexies : {self.floor_edge_indexies}\nsorted_edge_points : {self.sorted_edge_points}\nfloor_points : {self.floor_points}\npolygon : {self.polygon}\nintersections : {self.intersections}>"
