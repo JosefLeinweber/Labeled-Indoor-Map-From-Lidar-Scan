@@ -6,6 +6,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+scan-processing-d5aa2e71588b.*
+scan-processing-d5aa2e71588b.json
+
 # Cache
 .cache
 .pytest_cache/

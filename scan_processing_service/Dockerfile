@@ -1,5 +1,5 @@
 # Pull official latest Python Docker image (Pulished with version 3.10.9)
-FROM python:3.11.1-slim-bullseye
+FROM python:3.10-slim-bullseye
 
 # Set the working directory
 WORKDIR /usr/scan_processing_service
@@ -20,6 +20,9 @@ EXPOSE 8000
 RUN apt-get update \
     && apt-get -y install netcat gcc postgresql \
     && apt-get clean
+
+RUN apt-get update \
+    && apt-get install libgl1 -y
 
 # Install Python dependencies
 RUN pip install --upgrade pip

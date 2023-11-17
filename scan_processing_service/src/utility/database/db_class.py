@@ -1,5 +1,5 @@
-import pydantic
 import loguru
+import pydantic
 from sqlalchemy.ext.asyncio import (
     async_sessionmaker as sqlalchemy_async_sessionmaker,
     AsyncEngine as SQLAlchemyAsyncEngine,
@@ -28,9 +28,7 @@ class Database:
         self.server: str = "Asynchronous Postgres Server"
         self.framework: str = "Asynchronous SQLAlchemy"
         self._async_engine: SQLAlchemyAsyncEngine | None = None
-        self._async_session: sqlalchemy_async_sessionmaker[
-            SQLAlchemyAsyncSession
-        ] | None = None
+        self._async_session: sqlalchemy_async_sessionmaker[SQLAlchemyAsyncSession] | None = None
         self.postgres_uri: str = f"{settings.POSTGRES_SCHEMA}+asyncpg://{settings.POSTGRES_USERNAME}:{settings.POSTGRES_PASSWORD}@{settings.POSTGRES_DEV_HOST}:{settings.POSTGRES_PORT}/{settings.POSTGRES_DEV_DB}"
 
     @property
@@ -61,21 +59,19 @@ class Database:
 
     @property
     def initialize_async_session(self) -> None:
-        self._async_session = sqlalchemy_async_sessionmaker(
-            bind=self.async_engine, expire_on_commit=False
-        )
+        self._async_session = sqlalchemy_async_sessionmaker(bind=self.async_engine, expire_on_commit=False)
 
     def __call__(self):
         loguru.logger.info(f"DB Class: \t Database is called!")
         loguru.logger.info(f"Establishing SQLAlchemy Async Engine...")
         while not self.async_engine:
             loguru.logger.info(f"Initalizing SQLAlchemy Async Engine...")
-            self.initialize_async_engine()
+            self.initialize_async_engine
         loguru.logger.info(f"Successfully Initialized SQLAlchemy Async Engine!")
 
         while not self.async_session:
             loguru.logger.info(f"Initalizing SQLAlchemy Async Session...")
-            self.initialize_async_session()
+            self.initialize_async_session
         loguru.logger.info(f"Successfully Initialized SQLAlchemy Async Session!")
         return self
 

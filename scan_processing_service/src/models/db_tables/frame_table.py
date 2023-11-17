@@ -8,33 +8,21 @@ from sqlalchemy.orm import (
     relationship as sqlalchemy_relationship,
 )
 from sqlalchemy.sql import functions as sqlalchemy_functions
-
 from src.utility.database.base_table import DBBaseTable
 
 
-class Account(DBBaseTable):
-    __tablename__ = "account"
+class Frame(DBBaseTable):
+    __tablename__ = "frame"
 
     id: SQLAlchemyMapped[int] = sqlalchemy_mapped_column(
         primary_key=True, autoincrement="auto"
     )
-    username: SQLAlchemyMapped[str] = sqlalchemy_mapped_column(
-        sqlalchemy.String(length=64), nullable=False, unique=True
+    frame_index: SQLAlchemyMapped[int] = sqlalchemy_mapped_column(nullable=False)
+    projection_matrix: SQLAlchemyMapped[list] = sqlalchemy_mapped_column(
+        sqlalchemy.JSON, nullable=False
     )
-    email: SQLAlchemyMapped[pydantic.EmailStr] = sqlalchemy_mapped_column(
-        sqlalchemy.String(length=64), nullable=False, unique=True
-    )
-    password: SQLAlchemyMapped[str] = sqlalchemy_mapped_column(
-        sqlalchemy.String(length=64), nullable=False
-    )
-    is_admin: SQLAlchemyMapped[bool] = sqlalchemy_mapped_column(
-        sqlalchemy.Boolean, default=False
-    )
-    is_logged_in: SQLAlchemyMapped[bool] = sqlalchemy_mapped_column(
-        sqlalchemy.Boolean, default=True
-    )
-    is_verified: SQLAlchemyMapped[bool] = sqlalchemy_mapped_column(
-        sqlalchemy.Boolean, default=False
+    camera_pose_ar_frame: SQLAlchemyMapped[list] = sqlalchemy_mapped_column(
+        sqlalchemy.JSON, nullable=False
     )
     created_at: SQLAlchemyMapped[datetime.datetime] = sqlalchemy_mapped_column(
         sqlalchemy.DateTime(timezone=True),
@@ -46,5 +34,9 @@ class Account(DBBaseTable):
         nullable=True,
         server_onupdate=sqlalchemy.schema.FetchedValue(for_update=True),
     )
+    scan_id: SQLAlchemyMapped[int] = sqlalchemy_mapped_column(
+        sqlalchemy.ForeignKey("scan.id"), nullable=False
+    )
+    scan = sqlalchemy_relationship("Scan", back_populates="frame")
 
     __mapper_args__ = {"eager_defaults": True}

@@ -2,7 +2,6 @@ import datetime
 
 import pydantic
 import sqlalchemy
-from sqlalchemy import PickleType as PickleTypeForDict
 from sqlalchemy.orm import (
     Mapped as SQLAlchemyMapped,
     mapped_column as sqlalchemy_mapped_column,
@@ -13,13 +12,13 @@ from sqlalchemy.sql import functions as sqlalchemy_functions
 from src.utility.database.base_table import DBBaseTable
 
 
-class Scan(DBBaseTable):
-    __tablename__ = "scan"
+class IntersectionPoint(DBBaseTable):
+    __tablename__ = "intersection_point"
 
     id: SQLAlchemyMapped[int] = sqlalchemy_mapped_column(primary_key=True, autoincrement="auto")
-    name: SQLAlchemyMapped[str] = sqlalchemy_mapped_column(sqlalchemy.String(length=64), nullable=False)
-    user_id: SQLAlchemyMapped[int] = sqlalchemy_mapped_column(nullable=False)
-    num_images: SQLAlchemyMapped[int] = sqlalchemy_mapped_column(nullable=False)
+    frame_index: SQLAlchemyMapped[int] = sqlalchemy_mapped_column(nullable=False)
+    coordinates: SQLAlchemyMapped[list] = sqlalchemy_mapped_column(sqlalchemy.JSON, nullable=False)
+    classification: SQLAlchemyMapped[str] = sqlalchemy_mapped_column(sqlalchemy.String(length=64), nullable=True)
     created_at: SQLAlchemyMapped[datetime.datetime] = sqlalchemy_mapped_column(
         sqlalchemy.DateTime(timezone=True),
         nullable=False,
@@ -30,7 +29,9 @@ class Scan(DBBaseTable):
         nullable=True,
         server_onupdate=sqlalchemy.schema.FetchedValue(for_update=True),
     )
-    frame = sqlalchemy_relationship("Frame", back_populates="scan")
-    floorplan = sqlalchemy_relationship("Floorplan", back_populates="scan")
+    floorplan_id: SQLAlchemyMapped[int] = sqlalchemy_mapped_column(
+        sqlalchemy.ForeignKey("floorplan.id"), nullable=False
+    )
+    floorplan = sqlalchemy_relationship("Floorplan", back_populates="intersection_point")
 
     __mapper_args__ = {"eager_defaults": True}

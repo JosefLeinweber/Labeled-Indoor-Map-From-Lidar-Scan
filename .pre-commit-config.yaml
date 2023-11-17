@@ -1,0 +1,28 @@
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+    -   id: check-yaml
+    -   id: end-of-file-fixer
+    -   id: trailing-whitespace
+        files: ^scan_processing_service/
+-   repo: https://github.com/psf/black
+    rev: 23.3.0
+    hooks:
+    -   id: black
+        language_version: python3.10
+        args:
+        - --config=scan_processing_service/pyproject.toml
+-   repo: https://github.com/pycqa/isort
+    rev: 5.12.0
+    hooks:
+    -   id: isort
+        name: isort (python)
+        args:
+        - --settings-path=scan_processing_service/pyproject.toml
+-   repo: https://github.com/pre-commit/mirrors-mypy
+    rev: "v1.2.0"
+    hooks:
+    -   id: mypy
+        args:
+        - --config-file=scan_processing_service/pyproject.toml

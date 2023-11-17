@@ -7,7 +7,7 @@ from typing import Generator
 from src.utility.database.db_class import db
 
 
-async def get_async_session() -> Generator:
+async def get_async_session() -> Generator:  # type: ignore
     try:
         yield db.async_session
     except Exception as e:
