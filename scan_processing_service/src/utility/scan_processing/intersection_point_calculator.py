@@ -1,8 +1,4 @@
-import sys
-
 import loguru
-import matplotlib.pyplot as plt
-import numpy as np
 import shapely.geometry as sg
 from shapely.geometry import Polygon
 
@@ -42,8 +38,8 @@ class IntersectionPointCalculator:
     def _compute_vector_in_camera_view_direction(self, frame: FrameInIntersectionCalculator):
         vector = generate_vector(frame.camera_pose_ar_frame, length=self.vector_length)
 
-        camera_view_2d = []
+        camera_view = []
         for i in range(len(vector)):
-            camera_view_2d.append([vector[i][0], vector[i][2]])
+            camera_view.append([vector[i][0], vector[i][2]])
 
-        return camera_view_2d
+        return camera_view
