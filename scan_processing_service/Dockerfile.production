@@ -24,7 +24,7 @@ RUN apt-get update \
 
 # Install Python dependencies
 RUN pip install --upgrade pip
-COPY .scan_processing_service/requirements.txt ./
+COPY ./scan_processing_service/requirements.txt ./
 RUN pip3 install -r requirements.txt
 
 
