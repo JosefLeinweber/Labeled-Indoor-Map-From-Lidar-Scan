@@ -2,8 +2,9 @@ import pathlib
 
 import fastapi
 import loguru
-import numpy as np
-import open3d as o3d
+
+# import numpy as np
+# import open3d as o3d
 from sqlalchemy.ext.asyncio import (
     async_sessionmaker as sqlalchemy_async_sessionmaker,
     AsyncEngine as SQLAlchemyAsyncEngine,

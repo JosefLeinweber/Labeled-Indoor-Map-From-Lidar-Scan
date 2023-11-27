@@ -1,8 +1,9 @@
 import math
 
 import loguru
-import numpy as np
-from scipy.spatial import Delaunay
+
+# import numpy as np
+# from scipy.spatial import Delaunay
 
 
 def generate_vector(camera_pose_ar_frame, angle_x=0, angle_y=0, angle_z=0, color=[1, 0, 0], length=100):

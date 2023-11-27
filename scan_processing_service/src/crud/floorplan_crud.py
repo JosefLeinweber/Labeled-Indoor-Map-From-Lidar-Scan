@@ -1,5 +1,6 @@
 import loguru
-import open3d as o3d
+
+# import open3d as o3d
 import sqlalchemy
 from sqlalchemy import exc as sqlalchemy_error
 from sqlalchemy.orm import selectinload as sqlalchemy_selectinload

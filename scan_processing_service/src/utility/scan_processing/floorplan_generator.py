@@ -1,9 +1,9 @@
 import sys
 
-import matplotlib.pyplot as plt
-import numpy as np
-import shapely.geometry as sg
-from shapely.geometry import Polygon
+# import matplotlib.pyplot as plt
+# import numpy as np
+# import shapely.geometry as sg
+# from shapely.geometry import Polygon
 
 from src.utility.scan_processing.helper_functions import alpha_shape
 
