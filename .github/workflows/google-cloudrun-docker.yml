@@ -45,7 +45,7 @@
 name: Build and Deploy to Cloud Run
 
 on:
-  push:
+  pull_request:
     branches: ["trunk"]
 
 env:
