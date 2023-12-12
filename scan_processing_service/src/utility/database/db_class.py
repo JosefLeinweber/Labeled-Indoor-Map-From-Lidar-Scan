@@ -1,5 +1,5 @@
 import loguru
-import pydantic
+from functools import lru_cache
 from sqlalchemy.ext.asyncio import (
     async_sessionmaker as sqlalchemy_async_sessionmaker,
     AsyncEngine as SQLAlchemyAsyncEngine,
@@ -9,9 +9,10 @@ from sqlalchemy.ext.asyncio import (
 from sqlalchemy.pool import QueuePool as SQLAlchemyQueuePool
 
 from src.config.settings.setup import settings
+from src.utility.design_patterns.singletone import SingletonMeta
 
 
-class Database:
+class Database(metaclass=SingletonMeta):
     """
     Database for:
         - Asychronous SQLAlchemy

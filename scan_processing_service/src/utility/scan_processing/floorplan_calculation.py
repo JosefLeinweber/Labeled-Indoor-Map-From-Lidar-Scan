@@ -1,28 +1,35 @@
-import sys
 import functools
+import sys
+
+import matplotlib.pyplot as plt
 import numpy as np
+import shapely.geometry as sg
+from shapely.geometry import Polygon
 
-# import matplotlib.pyplot as plt
-# import numpy as np
-# import shapely.geometry as sg
-# from shapely.geometry import Polygon
-# from src.utility.scan_processing.helper_functions import alpha_shape
+from src.utility.scan_processing.helper_functions import alpha_shape
 
 
-def compute_floorplan(point_cloud):
-    floor_points = functools.reduce(
-        lambda a, b: a if len(a.points) > len(b.points) else b, segment_helper(point_cloud).values()
-    )
-
-    two_dimensinal_floor_points = np.array([[point[0], point[2]] for point in floor_points.points])
-
+def floorplan_pipeline(point_cloud):
+    
+    floor_points = extracting_floor_points(point_cloud)
+    two_dimensinal_floor_points = make_floor_points_2d(floor_points)
     floor_edge_indexies = compute_edge_indexies(two_dimensinal_floor_points)
-
     edge_dict = generate_edge_dict(two_dimensinal_floor_points, floor_edge_indexies)
-
     sorted_edge_points = sort_edge_dict(edge_dict)
 
     return Polygon(sorted_edge_points)
+
+
+def extracting_floor_points(point_cloud):
+    floor_points = functools.reduce(
+        lambda a, b: a if len(a.points) > len(b.points) else b, segment_helper(point_cloud).values()
+    )
+    return floor_points
+
+
+def make_floor_points_2d(floor_points):
+    two_dimensinal_floor_points = np.array([[point[0], point[2]] for point in floor_points.points])
+    return two_dimensinal_floor_points
 
 
 def segment_helper(point_cloud, max_plane_idx=5, segments=None):

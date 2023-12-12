@@ -1,5 +1,5 @@
 gunicorn
-#open3d
+open3d
 alembic
 asgi_lifespan
 argon2_cffi
@@ -34,9 +34,9 @@ trio
 uvicorn
 pydantic_settings
 password_strength
-#numpy
-#matplotlib
-#shapely
+numpy
+matplotlib
+shapely
 beautifulsoup4==4.12.2
 cachetools==5.3.2
 certifi==2023.7.22
