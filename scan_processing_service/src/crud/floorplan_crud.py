@@ -10,7 +10,7 @@ from src.crud import scan_crud
 from src.models.db_tables.floorplan_table import Floorplan
 from src.models.schemas.floorplan_schema import FloorplanInCreate, FloorplanOut
 from src.utility.cloud_storage.gcs_class import gcstorage
-from src.utility.scan_processing.floorplan_generator import FloorplanGenerator
+from src.utility.scan_processing.floorplan_calculation import floorplan_pipeline
 
 
 async def create(new_floorplan: FloorplanInCreate, db_session) -> Floorplan:
@@ -24,7 +24,8 @@ async def create(new_floorplan: FloorplanInCreate, db_session) -> Floorplan:
         project_id="scan-processing",
     )
 
-    floorplan_generator = FloorplanGenerator(o3d.io.read_point_cloud(str(path_to_point_cloud)))
+    # TODO: implement change from FloorplanGenerator to floorplan_pipeline => what data do I need to save to db for a floorplan?
+    floorplan_polygon_points = floorplan_pipeline(o3d.io.read_point_cloud(str(path_to_point_cloud)))
 
     new_floorplan = Floorplan(**new_floorplan.__dict__)
     new_floorplan.polygon_points = floorplan_generator.sorted_edge_points
