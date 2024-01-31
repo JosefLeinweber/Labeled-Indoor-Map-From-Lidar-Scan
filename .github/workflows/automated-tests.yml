@@ -20,4 +20,4 @@ jobs:
         run: docker-compose build
 
       - name: Run Pytests
-        run: docker-compose run --rm app pytest
+        run: docker-compose run --rm scan_processing_service pytest
