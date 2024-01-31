@@ -56,19 +56,6 @@ class FloorplanGenerator:
 
         return self.get_largest_segment(segments).points
 
-    def compute_average_floor_height(self):
-        """
-        Computes the average floor height.
-        - uses the extract_floor_points() function.
-        :return: The average floor height.
-        """
-        floor_points = self.extract_floor_points()
-        average_floor_height: float = 0
-        for i in range(len(floor_points)):
-            average_floor_height += floor_points[i][1]
-        average_floor_height /= len(floor_points)
-        return average_floor_height
-
     def compute_two_dimensional_floor_points(self):
         """
         Computes the two dimensional floor points.
