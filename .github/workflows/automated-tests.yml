@@ -1,0 +1,23 @@
+name: Automated Tests
+
+on:
+  push:
+    branches:
+      - "*"
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Create .env file
+        run: cp .env-for-automated-tests .env
+
+      - name: Build Docker Compose
+        run: docker-compose build
+
+      - name: Run Pytests
+        run: docker-compose run --rm app pytest
