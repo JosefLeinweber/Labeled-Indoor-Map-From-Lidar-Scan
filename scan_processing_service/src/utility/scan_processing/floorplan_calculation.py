@@ -10,7 +10,6 @@ from src.utility.scan_processing.helper_functions import alpha_shape
 
 
 def floorplan_pipeline(point_cloud):
-    
     floor_points = extracting_floor_points(point_cloud)
     two_dimensinal_floor_points = make_floor_points_2d(floor_points)
     floor_edge_indexies = compute_edge_indexies(two_dimensinal_floor_points)
@@ -27,11 +26,6 @@ def extracting_floor_points(point_cloud):
     return floor_points
 
 
-def make_floor_points_2d(floor_points):
-    two_dimensinal_floor_points = np.array([[point[0], point[2]] for point in floor_points.points])
-    return two_dimensinal_floor_points
-
-
 def segment_helper(point_cloud, max_plane_idx=5, segments=None):
     if segments is None:
         segments = {}
@@ -46,6 +40,11 @@ def segment_helper(point_cloud, max_plane_idx=5, segments=None):
     rest = point_cloud.select_by_index(inliers, invert=True)
 
     return segment_helper(rest, max_plane_idx - 1, segments)
+
+
+def make_floor_points_2d(floor_points):
+    two_dimensinal_floor_points = np.array([[point[0], point[2]] for point in floor_points.points])
+    return two_dimensinal_floor_points
 
 
 def compute_edge_indexies(two_dimensinal_floor_points, alpha=0.25):
