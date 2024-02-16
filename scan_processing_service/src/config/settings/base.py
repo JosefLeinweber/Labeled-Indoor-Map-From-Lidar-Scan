@@ -64,6 +64,7 @@ class Settings(pydantic_settings.BaseSettings):
     GCLOUD_TOKEN_URI: str = decouple.config("GCLOUD_TOKEN_URI", cast=str)  # type: ignore
     GCLOUD_AUTH_PROVIDER_CERT_URL: str = decouple.config("GCLOUD_AUTH_PROVIDER_CERT_URL", cast=str)  # type: ignore
     GCLOUD_CLIENT_CERT_URL: str = decouple.config("GCLOUD_CLIENT_CERT_URL", cast=str)  # type: ignore
+    SERVICE_ACCOUNT_INFO: str = decouple.config("SERVICE_ACCOUNT_INFO", cast=str)  # type: ignore
 
     class Config(pydantic.BaseConfig):
         case_sensitive: bool = True

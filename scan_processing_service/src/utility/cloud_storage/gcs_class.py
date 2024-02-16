@@ -4,6 +4,7 @@ import mimetypes
 from google.cloud import storage
 import decouple
 import loguru
+import json
 from functools import lru_cache
 
 STORAGE_CLASSES = ("STANDARD", "NEARLINE", "COLDLINE", "ARCHIVE")
@@ -71,21 +72,7 @@ def get_gcstorage() -> GCStorage:
     loguru.logger.debug(f"Trying to authenticate with Google Cloud Storage")
     loguru.logger.debug(f"Authenticated with Google Cloud Storage: {os.environ.get('GCLOUD_PRIVATE_KEY')}")
 
-    client = storage.Client.from_service_account_info(
-        {
-            "type": os.environ.get("GCLOUD_TYPE"),
-            "project_id": os.environ.get("GCLOUD_PROJECT_ID"),
-            "private_key_id": os.environ.get("GCLOUD_PRIVATE_KEY_ID"),
-            "private_key": os.environ.get("GCLOUD_PRIVATE_KEY"),
-            "client_email": os.environ.get("GCLOUD_CLIENT_EMAIL"),
-            "client_id": os.environ.get("GCLOUD_CLIENT_ID"),
-            "auth_uri": os.environ.get("GCLOUD_AUTH_URI"),
-            "token_uri": os.environ.get("GCLOUD_TOKEN_URI"),
-            "auth_provider_x509_cert_url": os.environ.get("GCLOUD_AUTH_PROVIDER_CERT_URL"),
-            "client_x509_cert_url": os.environ.get("GCLOUD_CLIENT_CERT_URL"),
-            "universe_domain": "googleapis.com",
-        }
-    )
+    client = storage.Client.from_service_account_info(json.loads(os.environ.get("SERVICE_ACCOUNT_INFO")))
     loguru.logger.info("Authenticated with Google Cloud Storage")
     return GCStorage(client)
 

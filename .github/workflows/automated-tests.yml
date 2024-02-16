@@ -19,7 +19,6 @@ jobs:
         run: |
           echo "${{ secrets.ENV_VALUES }}" > .env
           echo GAC="${{ secrets.GAC }}" >> .env
-          echo GCLOUD_PRIVATE_KEY="${{ secrets.GCLOUD_PRIVATE_KEY }}" >> .env
 
       - name: Build Docker Compose
         run: docker-compose build
