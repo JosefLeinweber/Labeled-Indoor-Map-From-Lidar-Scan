@@ -70,7 +70,6 @@ def get_gcstorage() -> GCStorage:
     #         }
     #     )
     loguru.logger.debug(f"Trying to authenticate with Google Cloud Storage")
-    loguru.logger.debug(f"Authenticated with Google Cloud Storage: {os.environ.get('SERVICE_ACCOUNT_INFO')}")
 
     client = storage.Client()
     loguru.logger.info("Authenticated with Google Cloud Storage")
