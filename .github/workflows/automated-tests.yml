@@ -17,7 +17,7 @@ jobs:
 
       - name: Create scan-processing-d5aa2e71588b.json file
         run: |
-          echo "${{ secrets.SERVICE_ACCOUNT_INFO }}" > scan_processing_service/scan-processing-d5aa2e71588b.json
+          echo ${{ secrets.SERVICE_ACCOUNT_INFO }} > scan_processing_service/scan-processing-d5aa2e71588b.json
 
       - name: Create .env file
         run: |
