@@ -15,6 +15,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Create scan-processing-d5aa2e71588b.json file
+        run: echo "${{ secrets.SERVICE_ACCOUNT_INFO }}" > scan-processing-d5aa2e71588b.json
+
       - name: Create .env file
         run: |
           echo "${{ secrets.ENV_VALUES }}" > .env
