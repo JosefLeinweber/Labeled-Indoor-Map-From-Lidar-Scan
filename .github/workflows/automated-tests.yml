@@ -15,11 +15,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Google Auth
-        id: auth
-        uses: "google-github-actions/auth@v1"
-        with:
-          credentials_json: "${{ secrets.GCP_CREDENTIALS }}"
+      - name: Create GCLOUD_AUTH_CREDENTIALS.json
+        run: echo ${{ secrets.GCLOUD_STORAGE_AUTHENTICATION }} >> scan-processing-d5aa2e71588b.json
 
       - name: Create .env file
         run: |

@@ -4,9 +4,7 @@ import pathlib
 import decouple
 
 
-ROOT_DIR: pathlib.Path = pathlib.Path(
-    __file__
-).parent.parent.parent.parent.parent.resolve()
+ROOT_DIR: pathlib.Path = pathlib.Path(__file__).parent.parent.parent.parent.parent.resolve()
 
 
 class Settings(pydantic_settings.BaseSettings):
@@ -54,6 +52,18 @@ class Settings(pydantic_settings.BaseSettings):
     POSTGRES_ECHO: bool = decouple.config("POSTGRES_ECHO", cast=bool)  # type: ignore
     DB_POOL_SIZE: int = decouple.config("DB_POOL_SIZE", cast=int)  # type: ignore
     DB_MAX_OVERFLOW: int = decouple.config("DB_MAX_OVERFLOW", cast=int)  # type: ignore
+
+    # ---------------------Cloud Storage---------------------
+    GCLOUD_TYPE: str = decouple.config("GCLOUD_TYPE", cast=str)  # type: ignore
+    GCLOUD_PROJECT_ID: str = decouple.config("GCLOUD_PROJECT_ID", cast=str)  # type: ignore
+    GCLOUD_PRIVATE_KEY_ID: str = decouple.config("GCLOUD_PRIVATE_KEY_ID", cast=str)  # type: ignore
+    GCLOUD_PRIVATE_KEY: str = decouple.config("GCLOUD_PRIVATE_KEY", cast=str)  # type: ignore
+    GCLOUD_CLIENT_EMAIL: str = decouple.config("GCLOUD_CLIENT_EMAIL", cast=str)  # type: ignore
+    GCLOUD_CLIENT_ID: str = decouple.config("GCLOUD_CLIENT_ID", cast=str)  # type: ignore
+    GCLOUD_AUTH_URI: str = decouple.config("GCLOUD_AUTH_URI", cast=str)  # type: ignore
+    GCLOUD_TOKEN_URI: str = decouple.config("GCLOUD_TOKEN_URI", cast=str)  # type: ignore
+    GCLOUD_AUTH_PROVIDER_CERT_URL: str = decouple.config("GCLOUD_AUTH_PROVIDER_CERT_URL", cast=str)  # type: ignore
+    GCLOUD_CLIENT_CERT_URL: str = decouple.config("GCLOUD_CLIENT_CERT_URL", cast=str)  # type: ignore
 
     class Config(pydantic.BaseConfig):
         case_sensitive: bool = True

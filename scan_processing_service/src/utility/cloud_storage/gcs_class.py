@@ -65,6 +65,7 @@ def get_gcstorage() -> GCStorage:
                 "token_uri": os.environ.get("GCLOUD_TOKEN_URI"),
                 "auth_provider_x509_cert_url": os.environ.get("GCLOUD_AUTH_PROVIDER_CERT_URL"),
                 "client_x509_cert_url": os.environ.get("GCLOUD_CLIENT_CERT_URL"),
+                "universe_domain": "googleapis.com",
             }
         )
 
