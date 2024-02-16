@@ -42,7 +42,7 @@
 #   Container Registry vs Artifact Registry   - https://cloud.google.com/blog/products/application-development/understanding-artifact-registry-vs-container-registry
 #   Principle of least privilege              - https://cloud.google.com/blog/products/identity-security/dont-get-pwned-practicing-the-principle-of-least-privilege
 
-name: Build and Deploy to Cloud Run
+name: CI / CD Pipeline
 
 on:
   pull_request:
@@ -55,7 +55,25 @@ env:
   REGION: europe-west3
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Create .env file
+        run: |
+          echo "${{ secrets.ENV_VALUES }}" > .env
+
+      - name: Build Docker Compose
+        run: docker-compose build
+
+      - name: Run Pytests
+        run: docker-compose run --rm scan_processing_service pytest
+
   deploy:
+    needs: test
     # Add 'id-token' with the intended permissions for workload identity federation
     permissions:
       contents: "read"
