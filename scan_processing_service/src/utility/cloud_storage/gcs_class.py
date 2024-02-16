@@ -84,7 +84,8 @@ def get_gcstorage() -> GCStorage:
             "universe_domain": "googleapis.com",
         }
     )
-
+    loguru.logger.info("Authenticated with Google Cloud Storage")
+    loguru.logger.debug(f"Authenticated with Google Cloud Storage: {os.environ.get('GCLOUD_PRIVATE_KEY')}")
     return GCStorage(client)
 
 
