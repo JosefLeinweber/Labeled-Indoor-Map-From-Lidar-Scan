@@ -6,6 +6,7 @@ on:
       - "*"
       - "*/*"
       - "**"
+      - "!trunk"
 
 jobs:
   build-and-test:
