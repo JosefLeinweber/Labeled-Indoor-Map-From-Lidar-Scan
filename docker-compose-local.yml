@@ -1,0 +1,66 @@
+version: "3.8"
+
+services:
+  scan_processing_service:
+    container_name: scan_processing_service
+    restart: on-failure
+    build:
+      dockerfile: Dockerfile
+      context: ./scan_processing_service/
+
+    env_file:
+      - "./.env"
+
+    environment:
+      - WATCHFILES_FORCE_POLLING=true
+
+    volumes:
+      - ./scan_processing_service/src/:/usr/scan_processing_service/src/
+      - ./scan_processing_service/test:/usr/scan_processing_service/test/
+    ports:
+      - 8001:8000
+
+    depends_on:
+      - dev_db_server
+
+  dev_db_server:
+    container_name: dev_db_server
+    image: postgres:latest
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    restart: always
+    env_file:
+      - "./.env"
+
+    environment:
+      - POSTGRES_USER=${POSTGRES_USERNAME}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DEV_DB}
+      - PGDATA=/var/lib/postgresql/data/
+
+    expose:
+      - 5432
+    ports:
+      - 5431:5432
+
+  adminer:
+    image: adminer
+    container_name: db_adminer
+    restart: always
+    env_file:
+      - "./.env"
+    environment:
+      - POSTGRES_USER=${POSTGRES_USERNAME}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_HOST=${POSTGRES_DEV_HOST}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_DB=${POSTGRES_DEV_DB}
+    expose:
+      - 8080
+    ports:
+      - 8081:8080
+    depends_on:
+      - dev_db_server
+
+volumes:
+  postgres_data:

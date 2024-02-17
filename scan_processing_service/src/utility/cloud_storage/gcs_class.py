@@ -1,9 +1,10 @@
 import os
 import pathlib
-import mimetypes
 from google.cloud import storage
-import decouple
+import loguru
+import pathlib
 from functools import lru_cache
+
 
 STORAGE_CLASSES = ("STANDARD", "NEARLINE", "COLDLINE", "ARCHIVE")
 
@@ -39,8 +40,14 @@ class GCStorage:
 
 @lru_cache()
 def get_gcstorage() -> GCStorage:
-    client = storage.Client()
-    return GCStorage(client)
+    try:
+        loguru.logger.debug(f"Trying to authenticate with Google Cloud Storage")
+        client = storage.Client()
+        loguru.logger.info("Authenticated with Google Cloud Storage")
+        return GCStorage(client)
+    except Exception as e:
+        loguru.logger.error(f"Failed to authenticate with Google Cloud Storage: {e}")
+        raise e
 
 
 gcstorage: GCStorage = get_gcstorage()
