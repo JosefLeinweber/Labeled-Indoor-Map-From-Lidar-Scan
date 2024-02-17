@@ -46,7 +46,8 @@ name: CI / CD Pipeline
 
 on:
   pull_request:
-    branches: ["trunk"]
+    types:
+      - closed
 
 env:
   PROJECT_ID: scan-processing
@@ -56,6 +57,7 @@ env:
 
 jobs:
   test:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     steps:
