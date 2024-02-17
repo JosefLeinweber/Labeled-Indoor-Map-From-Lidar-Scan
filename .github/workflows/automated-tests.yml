@@ -15,6 +15,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Set up secret file
+        env:
+          SERVICE_ACCOUNT_INFO: ${{ secrets.SERVICE_ACCOUNT_INFO }}
+        run: |
+          echo $SERVICE_ACCOUNT_INFO >> secrets.txt
+
+      - name: Run tmate
+        uses: mxschmitt/action-tmate@v2
+
       - name: Create scan-processing-d5aa2e71588b.json file
         run: |
           cat '${{ secrets.SERVICE_ACCOUNT_INFO }}'
