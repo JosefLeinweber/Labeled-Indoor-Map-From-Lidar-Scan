@@ -62,9 +62,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Create scan-processing-d5aa2e71588b.json file
+        run: |
+          echo '${{ secrets.SERVICE_ACCOUNT_INFO }}' > scan_processing_service/scan-processing-d5aa2e71588b.json
+          cat scan_processing_service/scan-processing-d5aa2e71588b.json
       - name: Create .env file
         run: |
           echo "${{ secrets.ENV_VALUES }}" > .env
+          echo GAC="${{ secrets.GAC }}" >> .env
 
       - name: Build Docker Compose
         run: docker-compose build
