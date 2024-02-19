@@ -80,6 +80,7 @@ jobs:
         run: docker-compose run --rm scan_processing_service pytest
 
   deploy:
+    # Only run the deployment job when the 'test' job passes
     needs: test
     # Add 'id-token' with the intended permissions for workload identity federation
     permissions:
