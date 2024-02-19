@@ -56,25 +56,16 @@ env:
   REGION: europe-west3
 
 jobs:
-  build-test-deploy:
+  build-and-push:
     # Only run the workflow if the pull request was merged
     if: github.event.pull_request.merged == true
-    # Add 'id-token' with the intended permissions for workload identity federation
     permissions:
       contents: "read"
       id-token: "write"
-
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      # NOTE: Alternative option - authentication via credentials json
-      - name: Google Auth
-        id: auth
-        uses: "google-github-actions/auth@v1"
-        with:
-          credentials_json: "${{ secrets.GCP_CREDENTIALS }}"
 
       # BEGIN - Docker auth and build (NOTE: If you already have a container image, these Docker steps can be omitted)
 
@@ -94,6 +85,25 @@ jobs:
 
       # END - Docker auth and build
 
+  deploy:
+    needs: build-and-push
+    # Add 'id-token' with the intended permissions for workload identity federation
+    permissions:
+      contents: "read"
+      id-token: "write"
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # NOTE: Alternative option - authentication via credentials json
+      - name: Google Auth
+        id: auth
+        uses: "google-github-actions/auth@v1"
+        with:
+          credentials_json: "${{ secrets.GCP_CREDENTIALS }}"
+
       - name: Create .env file
         run: |
           echo "${{ secrets.ENV_VALUES }}" > .env
@@ -106,7 +116,7 @@ jobs:
           service: ${{ env.SERVICE }}
           region: ${{ env.REGION }}
           # NOTE: If using a pre-built image, update the image name here
-          image: ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.SERVICE }}/${{ env.SERVICE }}:${{ github.sha }}
+          image: ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.SERVICE }}/${{ env.SERVICE }}:latest
           env_vars_file: .env
 
       # If required, use the Cloud Run url output in later steps
