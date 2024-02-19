@@ -56,9 +56,6 @@ env:
   REGION: europe-west3
 
 jobs:
-  check-website:
-    runs-on: ubuntu-latest
-
   build-and-push:
     # Only run the workflow if the pull request was merged
     if: github.event.pull_request.merged == true
