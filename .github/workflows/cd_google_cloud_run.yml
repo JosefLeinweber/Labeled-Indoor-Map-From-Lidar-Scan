@@ -59,18 +59,6 @@ jobs:
   check-website:
     runs-on: ubuntu-latest
 
-    steps:
-      - name: Check Website
-        id: website_check
-        run: |
-          status_code=$(curl -s -o /dev/null -w "%{http_code}" https://example.com)
-          echo "::set-output name=status_code::$status_code"
-
-      - name: Notify on failure
-        if: steps.website_check.outputs.status_code != '200'
-        run: |
-          echo "The website is not reachable. Status code: ${{ steps.website_check.outputs.status_code }}"
-
   build-and-push:
     # Only run the workflow if the pull request was merged
     if: github.event.pull_request.merged == true
@@ -141,3 +129,15 @@ jobs:
       # If required, use the Cloud Run url output in later steps
       - name: Show Output
         run: echo ${{ steps.deploy.outputs.url }}
+
+  dispatch:
+    needs: deploy
+    runs-on: ubuntu-latest
+    permissions:
+      contents: "read"
+      id-token: "write"
+    steps:
+      - name: Dispatch event
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          event-type: scan-processing-deployed
