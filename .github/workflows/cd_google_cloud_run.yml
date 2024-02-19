@@ -107,7 +107,6 @@ jobs:
       - name: Create .env file
         run: |
           echo "${{ secrets.ENV_VALUES }}" > .env
-          echo GAC="${{ secrets.GAC }}" >> .env
 
       - name: Deploy to Cloud Run
         id: deploy
