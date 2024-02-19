@@ -56,32 +56,9 @@ env:
   REGION: europe-west3
 
 jobs:
-  test:
+  build-test-deploy:
+    # Only run the workflow if the pull request was merged
     if: github.event.pull_request.merged == true
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Create scan-processing-d5aa2e71588b.json file
-        run: |
-          echo '${{ secrets.SERVICE_ACCOUNT_INFO }}' > scan_processing_service/scan-processing-d5aa2e71588b.json
-          cat scan_processing_service/scan-processing-d5aa2e71588b.json
-      - name: Create .env file
-        run: |
-          echo "${{ secrets.ENV_VALUES }}" > .env
-          echo GAC="${{ secrets.GAC }}" >> .env
-
-      - name: Build Docker Compose
-        run: docker-compose build
-
-      - name: Run Pytests
-        run: docker-compose run --rm scan_processing_service pytest
-
-  deploy:
-    # Only run the deployment job when the 'test' job passes
-    needs: test
     # Add 'id-token' with the intended permissions for workload identity federation
     permissions:
       contents: "read"
@@ -116,6 +93,11 @@ jobs:
           docker push "${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.SERVICE }}/${{ env.SERVICE }}:${{ github.sha }}"
 
       # END - Docker auth and build
+
+      - name: Create .env file
+        run: |
+          echo "${{ secrets.ENV_VALUES }}" > .env
+          echo GAC="${{ secrets.GAC }}" >> .env
 
       - name: Deploy to Cloud Run
         id: deploy
