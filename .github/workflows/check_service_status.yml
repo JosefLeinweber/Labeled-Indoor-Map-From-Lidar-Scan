@@ -1,0 +1,23 @@
+name: Check Service Status
+
+on:
+  repository_dispatch:
+    types: [scan-processing-deployed]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Make request to service
+        id: website_check
+        run: |
+          status_code=$(curl -s -o /dev/null -w "%{http_code}" https://scan-processing-ravj5iskrq-ey.a.run.app/docs)
+          echo "::set-output name=status_code::$status_code"
+
+      - name: Fail if service is not running
+        run: |
+          if [ ${{ steps.website_check.outputs.status_code }} -ne 200 ]; then
+            echo "Service is not running"
+            exit 1
+          fi
