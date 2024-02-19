@@ -73,6 +73,7 @@ jobs:
 
       - name: Removing cloud run service environment variables
         run: |
+          gcloud config set run/region ${{ env.REGION }}
           gcloud run services update ${{ env.SERVICE }} --clear-env-vars
 
   build-and-push:
