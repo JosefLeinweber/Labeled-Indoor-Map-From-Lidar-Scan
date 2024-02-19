@@ -56,25 +56,20 @@ env:
   REGION: europe-west3
 
 jobs:
-  removing-env-variables:
-    permissions:
-      contents: "read"
-      id-token: "write"
+  check-website:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Google Auth
-        id: auth
-        uses: "google-github-actions/auth@v1"
-        with:
-          credentials_json: "${{ secrets.GCP_CREDENTIALS }}"
-
-      - name: Removing cloud run service environment variables
+      - name: Check Website
+        id: website_check
         run: |
-          gcloud config set run/region ${{ env.REGION }}
-          gcloud run services update ${{ env.SERVICE }} --clear-env-vars
+          status_code=$(curl -s -o /dev/null -w "%{http_code}" https://example.com)
+          echo "::set-output name=status_code::$status_code"
+
+      - name: Notify on failure
+        if: steps.website_check.outputs.status_code != '200'
+        run: |
+          echo "The website is not reachable. Status code: ${{ steps.website_check.outputs.status_code }}"
 
   build-and-push:
     # Only run the workflow if the pull request was merged
@@ -123,6 +118,11 @@ jobs:
         uses: "google-github-actions/auth@v1"
         with:
           credentials_json: "${{ secrets.GCP_CREDENTIALS }}"
+
+      - name: Removing cloud run service environment variables
+        run: |
+          gcloud config set run/region ${{ env.REGION }}
+          gcloud run services update ${{ env.SERVICE }} --clear-env-vars
 
       - name: Create .env file
         run: |
