@@ -9,19 +9,26 @@ on:
       - "!trunk"
 
 jobs:
-  build-and-test:
+  check-if-only-doc-changes:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Only docs changes
+  build-and-test:
+    runs-on: ubuntu-latests
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Early exit if only docs changes
         run: |
           if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -qE '^(docs|\.github)'; then
             echo "Only docs changes, exiting"
-            exit 0
-          fi
+            gh run cancel -q ${{ github.run_id }}
+            gh run watch -q ${{ github.run_id }}
 
       - name: Create scan-processing-d5aa2e71588b.json file
         run: |
