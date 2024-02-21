@@ -20,7 +20,8 @@ jobs:
         run: |
           if [[ -z "$(git diff --name-only ${{ github.base_ref }}...${{ github.head_ref }} | grep -E '^(docs/|README.md)')" ]]; then
             echo "Skipping all other steps"
-            exit 0
+            gh run cancel ${{ github.run_id }}
+            gh run watch ${{ github.run_id }}
           fi
 
       - name: Create scan-processing-d5aa2e71588b.json file
