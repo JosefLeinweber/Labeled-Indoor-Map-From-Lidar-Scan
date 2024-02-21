@@ -34,6 +34,6 @@ Steps to get it running
 
 The Application should should now run!
 
+# CI/CD Visualisation
 
-
-
+![alt text](https://github.com/JosefLeinweber/scan_processing/blob/671e22003068d3bd202388bd748d92c7c1889037/docs/images/cicd_visualization.png)
