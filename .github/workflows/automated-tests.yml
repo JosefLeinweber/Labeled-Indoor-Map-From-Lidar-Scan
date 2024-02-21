@@ -20,8 +20,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo $(git diff --name-only [29a9c9a8f6863f1c20b5c12069f8216e3d25150c [HEAD]])
-          if git diff --name-only [29a9c9a8f6863f1c20b5c12069f8216e3d25150c [HEAD]] | grep -vE '^(docs/|README\.md)'; then
+          if git diff --name-only origin/trunk | grep -vE '^(docs/|README\.md)'; then
             echo "Changes found outside docs or README"
           else
             echo "Only changes in docs or README"
