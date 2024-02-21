@@ -18,16 +18,16 @@ jobs:
 
       - name: Early exit if only docs changes
         run: |
-          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -qE '^(docs|\.github)'; then
-            echo "Only docs changes, exiting"
-            gh run cancel -q ${{ github.run_id }}
-            gh run watch -q ${{ github.run_id }}
+          if [[ -z "$(git diff --name-only ${{ github.base_ref }}...${{ github.head_ref }} | grep -E '^(docs/|README.md)')" ]]; then
+            echo "Skipping all other steps"
+            exit 0
           fi
 
       - name: Create scan-processing-d5aa2e71588b.json file
         run: |
           echo '${{ secrets.SERVICE_ACCOUNT_INFO }}' > scan_processing_service/scan-processing-d5aa2e71588b.json
           cat scan_processing_service/scan-processing-d5aa2e71588b.json
+
       - name: Create .env file
         run: |
           echo "${{ secrets.ENV_VALUES }}" > .env
