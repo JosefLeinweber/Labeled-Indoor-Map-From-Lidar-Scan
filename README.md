@@ -37,3 +37,9 @@ The Application should should now run!
 # CI/CD Visualisation
 
 ![alt text](https://github.com/JosefLeinweber/scan_processing/blob/671e22003068d3bd202388bd748d92c7c1889037/docs/images/cicd_visualization.png)
+
+# Running Automated Tests
+
+1. Start the application with ```docker-compose up```
+
+2. Run ```docker-compose exec scan_processing_service pytest```

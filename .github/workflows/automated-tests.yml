@@ -12,6 +12,9 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
+    outputs:
+      only_docs: ${{ steps.check.outputs.only_docs }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -19,27 +22,38 @@ jobs:
           fetch-depth: 0
 
       - name: Early exit if only docs changes
+        id: "check"
         run: |
 
           if git diff --name-only origin/trunk | grep -vE '^(docs/|README\.md)'; then
             echo "Changes found outside docs or README"
+            echo "::set-output name=only_docs::false"
+            
           else
             echo "Only changes in docs or README"
-            exit 0
+            echo "::set-output name=only_docs::true"
           fi
 
+      - name: print only_docs
+        run: |
+          echo "only_docs: ${{ steps.check.outputs.only_docs }}"
+
       - name: Create scan-processing-d5aa2e71588b.json file
+        if: ${{ steps.check.outputs.only_docs == 'false' }}
         run: |
           echo '${{ secrets.SERVICE_ACCOUNT_INFO }}' > scan_processing_service/scan-processing-d5aa2e71588b.json
           cat scan_processing_service/scan-processing-d5aa2e71588b.json
 
       - name: Create .env file
+        if: ${{ steps.check.outputs.only_docs == 'false' }}
         run: |
           echo "${{ secrets.ENV_VALUES }}" > .env
           echo GAC="${{ secrets.GAC }}" >> .env
 
       - name: Build Docker Compose
+        if: ${{ steps.check.outputs.only_docs == 'false' }}
         run: docker-compose build
 
       - name: Run Pytests
+        if: ${{ steps.check.outputs.only_docs == 'false' }}
         run: docker-compose run --rm scan_processing_service pytest
