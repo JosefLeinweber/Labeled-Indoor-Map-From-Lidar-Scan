@@ -19,11 +19,17 @@ jobs:
       - name: print git branch -r
         run: git branch -r
 
+      - name: set
+        run: git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/trunk
+
+      - name: print git branch -r
+        run: git branch -r
+
       - name: Early exit if only docs changes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/trunk
+
           if git diff --name-only origin/trunk | grep -vE '^(docs/|README\.md)'; then
             echo "Changes found outside docs or README"
           else
