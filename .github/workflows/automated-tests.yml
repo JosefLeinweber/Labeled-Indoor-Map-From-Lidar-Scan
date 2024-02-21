@@ -16,10 +16,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Only docs changes
+      - name: Early exit if only docs changes
         run: |
-          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -qE '^(docs|\.github)'; then
-            echo "Only docs changes, exiting"
+          if [[ -z "$(git diff --name-only ${{ github.base_ref }}...${{ github.head_ref }} | grep -E '^(docs/|README.md)')" ]]; then
+            echo "Skipping all other steps"
             exit 0
           fi
 
@@ -27,6 +27,7 @@ jobs:
         run: |
           echo '${{ secrets.SERVICE_ACCOUNT_INFO }}' > scan_processing_service/scan-processing-d5aa2e71588b.json
           cat scan_processing_service/scan-processing-d5aa2e71588b.json
+
       - name: Create .env file
         run: |
           echo "${{ secrets.ENV_VALUES }}" > .env
