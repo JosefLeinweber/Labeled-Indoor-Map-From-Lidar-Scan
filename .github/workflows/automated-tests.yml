@@ -9,13 +9,6 @@ on:
       - "!trunk"
 
 jobs:
-  check-if-only-doc-changes:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
   build-and-test:
     runs-on: ubuntu-latests
 
