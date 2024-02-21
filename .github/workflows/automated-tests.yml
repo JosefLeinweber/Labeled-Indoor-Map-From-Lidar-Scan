@@ -33,6 +33,10 @@ jobs:
             only_docs=true
           fi
 
+      - name: print only_docs
+        run: |
+          echo "only_docs: ${{ steps.check.outputs.only_docs }}"
+
       - name: Create scan-processing-d5aa2e71588b.json file
         if: ${{ steps.check.outputs.only_docs == 'true' }}
         run: |
