@@ -34,21 +34,21 @@ jobs:
           fi
 
       - name: Create scan-processing-d5aa2e71588b.json file
-        if: steps.check.outputs.only_docs == 'false'
+        if: steps.check.outputs.only_docs == 'true'
         run: |
           echo '${{ secrets.SERVICE_ACCOUNT_INFO }}' > scan_processing_service/scan-processing-d5aa2e71588b.json
           cat scan_processing_service/scan-processing-d5aa2e71588b.json
 
       - name: Create .env file
-        if: steps.check.outputs.only_docs == 'false'
+        if: steps.check.outputs.only_docs == 'true'
         run: |
           echo "${{ secrets.ENV_VALUES }}" > .env
           echo GAC="${{ secrets.GAC }}" >> .env
 
       - name: Build Docker Compose
-        if: steps.check.outputs.only_docs == 'false'
+        if: steps.check.outputs.only_docs == 'true'
         run: docker-compose build
 
       - name: Run Pytests
-        if: steps.check.outputs.only_docs == 'false'
+        if: steps.check.outputs.only_docs == 'true'
         run: docker-compose run --rm scan_processing_service pytest
