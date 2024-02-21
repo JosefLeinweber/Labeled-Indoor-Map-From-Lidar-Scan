@@ -22,6 +22,7 @@ jobs:
             echo "Only docs changes, exiting"
             gh run cancel -q ${{ github.run_id }}
             gh run watch -q ${{ github.run_id }}
+          fi
 
       - name: Create scan-processing-d5aa2e71588b.json file
         run: |
