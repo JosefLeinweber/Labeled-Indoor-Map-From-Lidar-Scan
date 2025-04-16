@@ -7,13 +7,9 @@ During the development, this microservice was named scan_processing. The purpose
 
 ## Functionality:
 
-1. Generate a floorplan from the data of a point cloud scan from the 3DScanner app (https://3dscannerapp.com/) for iOS devices
-
-2. Compute intersection points of the floor plan and the camera views of the images taken during the lidar scan 
-
-3.  Classifying an image with the help of an ML model
-  
-4. Mapping the classification value of the image to the floorplan with the help of the computed intersection point of step 2.
+- Generate a floorplan from the data of a point cloud scan from the 3DScanner app (https://3dscannerapp.com/) for iOS devices.
+- Compute intersection points of the floor plan and the camera views of the images taken during the lidar scan.
+- An ML model can then classify the images, and the classification value can be mapped to the intersection point.
 
 ## Setup
 
